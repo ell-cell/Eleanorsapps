@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sortd Minimalist Wishlist & Moodboard</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <style>
+    :root {
+      --bg-color: #F9F8F6;
+      --card-bg: #FFFFFF;
+      --text-main: #1C1C1C;
+      --text-muted: #707070;
+      
+      --radius-lg: 20px;
+      --radius-sm: 8px;
+      --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.04);
+      --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+      padding-top: 90px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, select, textarea { font-family: inherit; }
+    a { color: inherit; text-decoration: none; }
+
+    /* HEADER */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 70px;
+      background: rgba(249, 248, 246, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 100;
+      border-bottom: 1px solid rgba(0,0,0,0.03);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4%;
+    }
+
+    .brand-logo {
+      font-weight: 600;
+      letter-spacing: 2px;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+    }
+
+    .read-only-badge {
+      display: none;
+      background: #E0A990;
+      color: #FFF;
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-left: 8px;
+    }
+
+    .nav-filters {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,0,0,0.03);
+      padding: 4px;
+      border-radius: 30px;
+      overflow-x: auto;
+      max-width: 40%;
+    }
+
+    .filter-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 16px;
+      font-size: 0.85rem;
+      border-radius: 20px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: #FFF;
+      color: var(--text-main);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-pill, .code-pill {
+      background: #FFF;
+      border: 1px solid rgba(0,0,0,0.1);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .code-pill:hover {
+      border-color: var(--text-main);
+      background: #F0EDE8;
+    }
+
+    .add-list-btn, .manage-list-btn {
+      background: transparent;
+      border: 1px dashed rgba(0,0,0,0.2);
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      border-radius: 20px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .add-list-btn:hover, .manage-list-btn:hover {
+      border-color: var(--text-main);
+      color: var(--text-main);
+    }
+
+    .add-btn {
+      background: var(--text-main);
+      color: #FFF;
+      border: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .add-btn:hover { transform: scale(1.05); background: #333; }
+
+    /* MASONRY GRID */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .masonry-grid {
+      column-count: 1;
+      column-gap: 24px;
+    }
+
+    @media (min-width: 600px) { .masonry-grid { column-count: 2; } }
+    @media (min-width: 900px) { .masonry-grid { column-count: 3; } }
+    @media (min-width: 1200px) { .masonry-grid { column-count: 4; } }
+
+    .card {
+      break-inside: avoid;
+      margin-bottom: 24px;
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      transition: var(--transition);
+      position: relative;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-media { position: relative; width: 100%; overflow: hidden; background: #f0ede8; min-height: 180px; }
+    .card-media img { width: 100%; height: auto; display: block; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); object-fit: cover; }
+    .card:hover .card-media img { transform: scale(1.03); }
+
+    .card-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 60%);
+      opacity: 0;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px;
+      color: #FFF;
+    }
+
+    .card:hover .card-overlay { opacity: 1; }
+
+    .overlay-top { display: flex; justify-content: space-between; align-items: center; }
+
+    .badge {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(8px);
+      font-weight: 500;
+    }
+
+    .badge-priority-High { background: rgba(194, 155, 136, 0.9); color: #FFF; }
+    .badge-priority-Medium { background: rgba(138, 154, 134, 0.9); color: #FFF; }
+    .badge-priority-Low { background: rgba(115, 130, 144, 0.9); color: #FFF; }
+
+    .action-icons { display: flex; gap: 8px; }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--text-main);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .icon-btn:hover { background: #FFF; transform: scale(1.1); }
+    .icon-btn.delete-btn:hover { background: #e63946; color: #FFF; }
+
+    .card-body { padding: 16px; }
+    .card-body .brand { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-muted); }
+    .card-body .title { font-size: 1rem; font-weight: 500; margin: 2px 0 6px 0; }
+    .card-body .price { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; font-weight: 500; color: var(--text-main); }
+    .card-body .notes { font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; line-height: 1.4; }
+
+    /* MODALS */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition);
+    }
+
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .modal {
+      background: var(--card-bg);
+      width: 90%;
+      max-width: 500px;
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow-hover);
+      transform: translateY(20px);
+      transition: var(--transition);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.active .modal { transform: translateY(0); }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .modal h2 { font-size: 1.25rem; font-weight: 500; margin-bottom: 6px; }
+    .modal p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
+
+    .form-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .form-row { display: flex; gap: 12px; }
+
+    .modal input, .modal select, .modal textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.1);
+      background: var(--bg-color);
+      outline: none;
+      font-size: 0.9rem;
+    }
+
+    .code-box {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      background: #F0EDE8;
+      padding: 12px;
+      border-radius: 12px;
+      word-break: break-all;
+      border: 1px solid rgba(0,0,0,0.08);
+      max-height: 100px;
+      overflow-y: auto;
+    }
+
+    .image-preview-container {
+      width: 100%;
+      height: 140px;
+      border-radius: 12px;
+      border: 1px dashed rgba(0,0,0,0.15);
+      background: var(--bg-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .image-preview-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .file-upload-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #FFF;
+      border: 1px solid rgba(0,0,0,0.15);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .file-upload-btn:hover { background: #f0ede8; }
+
+    .modal-btn {
+      width: 100%;
+      background: var(--text-main);
+      color: #FFF;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .modal-btn.danger { background: #e63946; }
+    .modal-btn.danger:hover { background: #c52a36; }
+
+    .loader {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(0,0,0,0.1);
+      border-top-color: var(--text-main);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(0,0,0,0.05);
+      padding: 40px 20px;
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-share {
+      background: transparent;
+      border: 1px solid rgba(0,0,0,0.15);
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+
+    .btn-share:hover { background: var(--card-bg); border-color: var(--text-main); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div style="display: flex; align-items: center;">
+      <div class="brand-logo">SORTD.</div>
+      <span class="read-only-badge" id="readOnlyBadge">Shared View Only</span>
+    </div>
+
+    <div class="nav-filters" id="listNavContainer"></div>
+
+    <div class="header-actions" id="editableHeaderActions">
+      <button class="code-pill" onclick="openImportCodeModal()">
+        <i data-feather="key" style="width: 14px;"></i>
+        <span>Enter Code</span>
+      </button>
+      <button class="user-pill" onclick="openUserModal()">
+        <i data-feather="user" style="width: 14px;"></i>
+        <span id="displayUsername">Guest</span>
+      </button>
+      <button class="add-list-btn" onclick="openCreateListModal()">+ List</button>
+      <button class="manage-list-btn" onclick="openManageListsModal()"><i data-feather="settings" style="width: 14px;"></i></button>
+      <button class="add-btn" onclick="openAddModal()" aria-label="Add Product">
+        <i data-feather="plus"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="masonry-grid" id="gridContainer"></div>
+  </main>
+
+  <div class="modal-overlay" id="userModalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('userModalOverlay')"><i data-feather="x"></i></button>
+      <h2>Account Username</h2>
+      <p>Enter a username to save and access your personal board instantly.</p>
+      
+      <div class="form-group">
+        <input type="text" id="usernameInput" placeholder="e.g., alex_wishlist">
+      </div>
+
+      <button class="modal-btn" onclick="saveUsername()">Load / Save My Board</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="shareCodeModalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('shareCodeModalOverlay')"><i data-feather="x"></i></button>
+      <h2>Share Wishlist Board</h2>
+      <p>Send your unique Wishlist Code or Link to anyone so they can view your board.</p>
+      
+      <div class="form-group">
+        <label style="font-size:0.75rem; color: var(--text-muted);">Your Wishlist Share Code</label>
+        <div class="code-box" id="generatedShareCode">Generating...</div>
+        
+        <button class="file-upload-btn" onclick="copyShareCodeText()">
+          <i data-feather="copy" style="width:14px;"></i> Copy Code
+        </button>
+      </div>
+
+      <button class="modal-btn" onclick="triggerNativeShare()">Share Link or AirDrop</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="importCodeModalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('importCodeModalOverlay')"><i data-feather="x"></i></button>
+      <h2>Import Wishlist by Code</h2>
+      <p>Paste a friend's Wishlist Code below to view or load their items directly onto your device.</p>
+      
+      <div class="form-group">
+        <textarea id="inputShareCode" rows="3" placeholder="Paste special wishlist code here..."></textarea>
+      </div>
+
+      <button class="modal-btn" onclick="loadBoardFromCode()">Load Wishlist</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="deleteListModalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('deleteListModalOverlay')"><i data-feather="x"></i></button>
+      <h2>Delete List Confirmation</h2>
+      <p id="deleteListWarningText">This action cannot be undone.</p>
+      
+      <div class="form-group">
+        <label style="font-size: 0.8rem; color: var(--text-muted);">Type the list name to confirm deletion:</label>
+        <input type="text" id="confirmListNameInput" placeholder="Type list name exactly...">
+      </div>
+
+      <button class="modal-btn danger" onclick="confirmDeleteList()">Permanently Delete List</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="manageListsModalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('manageListsModalOverlay')"><i data-feather="x"></i></button>
+      <h2>Manage Lists</h2>
+      <p>Select a list you wish to delete safely.</p>
+      
+      <div class="form-group">
+        <select id="manageListSelect"></select>
+      </div>
+
+      <button class="modal-btn danger" onclick="initiateListDelete()">Delete Selected List</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="addModalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('addModalOverlay')"><i data-feather="x"></i></button>
+      <h2>Add Product</h2>
+      <p>Paste a web link for smart metadata extraction, or upload a photo directly.</p>
+      
+      <div class="form-group">
+        <label style="font-size:0.75rem; color: var(--text-muted);">Product Link (Optional)</label>
+        <input type="url" id="importUrl" placeholder="https://store.com/product-page...">
+
+        <label style="font-size:0.75rem; color: var(--text-muted);">Or Upload Custom Photo / Image</label>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <label class="file-upload-btn">
+            <i data-feather="image" style="width: 16px;"></i> Choose Photo
+            <input type="file" id="addFileInput" accept="image/*" style="display: none;" onchange="handleFileUpload(event, 'addPreview', 'addCustomImage')">
+          </label>
+          <span id="addFileName" style="font-size:0.75rem; color: var(--text-muted);">No file chosen</span>
+        </div>
+
+        <div class="image-preview-container" id="addPreviewContainer" style="display: none;">
+          <img id="addPreview" src="" alt="Preview">
+        </div>
+        <input type="hidden" id="addCustomImage">
+        
+        <div class="form-row">
+          <select id="importCategoryList"></select>
+          <select id="importPriority">
+            <option value="High">High Priority</option>
+            <option value="Medium" selected>Medium Priority</option>
+            <option value="Low">Low Priority</option>
+          </select>
+        </div>
+
+        <textarea id="importNotes" rows="2" placeholder="Custom notes (size, color preference...)"></textarea>
+      </div>
+
+      <button class="modal-btn" onclick="extractAndAddProduct()">Smart Add to Board</button>
+
+      <div class="loader" id="addLoader">
+        <div class="spinner"></div>
+        <span>AI scanning deep metadata, prices, & high-res media...</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="editModalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('editModalOverlay')"><i data-feather="x"></i></button>
+      <h2>Edit Item Details</h2>
+      
+      <input type="hidden" id="editItemId">
+      
+      <div class="form-group">
+        <label style="font-size:0.75rem; color: var(--text-muted);">Title</label>
+        <input type="text" id="editTitle">
+        
+        <div class="form-row">
+          <div>
+            <label style="font-size:0.75rem; color: var(--text-muted);">Price</label>
+            <input type="text" id="editPrice">
+          </div>
+          <div>
+            <label style="font-size:0.75rem; color: var(--text-muted);">Brand / Store</label>
+            <input type="text" id="editBrand">
+          </div>
+        </div>
+
+        <label style="font-size:0.75rem; color: var(--text-muted);">Image Source (URL or Direct Upload)</label>
+        <input type="url" id="editImage" placeholder="Image URL..." oninput="updateEditPreview(this.value)">
+
+        <div style="display: flex; gap: 10px; align-items: center; margin-top: 4px;">
+          <label class="file-upload-btn">
+            <i data-feather="upload-cloud" style="width: 16px;"></i> Replace with Photo File
+            <input type="file" id="editFileInput" accept="image/*" style="display: none;" onchange="handleFileUpload(event, 'editPreview', 'editImage')">
+          </label>
+        </div>
+
+        <div class="image-preview-container">
+          <img id="editPreview" src="" alt="Image Preview" onerror="this.src='https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80'">
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label style="font-size:0.75rem; color: var(--text-muted);">List</label>
+            <select id="editCategoryList"></select>
+          </div>
+          <div>
+            <label style="font-size:0.75rem; color: var(--text-muted);">Priority</label>
+            <select id="editPriority">
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+        </div>
+
+        <label style="font-size:0.75rem; color: var(--text-muted);">Notes & Details</label>
+        <textarea id="editNotes" rows="2"></textarea>
+      </div>
+
+      <button class="modal-btn" onclick="saveProductEdit()">Save Changes</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="createListModalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('createListModalOverlay')"><i data-feather="x"></i></button>
+      <h2>Create New List</h2>
+      
+      <div class="form-group">
+        <input type="text" id="newListName" placeholder="List Name (e.g., Birthday, Decor)">
+      </div>
+
+      <button class="modal-btn" onclick="createNewList()">Create List</button>
+    </div>
+  </div>
+
+  <footer>
+    <button class="btn-share" onclick="openShareCodeModal()">
+      <i data-feather="share-2" style="width: 14px;"></i> Share Wishlist & Get Code
+    </button>
+  </footer>
+
+  <script>
+    // APP STATE
+    let currentUser = localStorage.getItem('sortd_current_user') || 'default_user';
+    let isReadOnly = false;
+    let listToDelete = null;
+
+    let lists = ['Birthday', 'Home Decor', 'Tech', 'Jewellery'];
+    let activeFilter = 'All';
+
+    let products = [
+      {
+        id: '1',
+        title: 'Loveknot Bracelet',
+        brand: 'VUOI Jewellery',
+        price: '$149.00 AUD',
+        image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80',
+        url: 'https://vuoi.com.au',
+        list: 'Jewellery',
+        priority: 'High',
+        notes: '18K Gold Vermeil over Sterling Silver.'
+      },
+      {
+        id: '2',
+        title: 'Minimalist Ceramic Vase',
+        brand: 'Studio Artisan',
+        price: '$85.00',
+        image: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=800&q=80',
+        url: 'https://unsplash.com',
+        list: 'Home Decor',
+        priority: 'Medium',
+        notes: 'Off-white textured ceramic.'
+      }
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      checkSharedLink();
+      if(!isReadOnly) {
+        loadUserData();
+      }
+      renderListsNav();
+      renderProducts();
+      feather.replace();
+    });
+
+    // FILE / PHOTO UPLOADER
+    function handleFileUpload(event, previewImgId, targetInputId) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64Data = e.target.result;
+        
+        const targetInput = document.getElementById(targetInputId);
+        if (targetInput) targetInput.value = base64Data;
+
+        const previewImg = document.getElementById(previewImgId);
+        if (previewImg) previewImg.src = base64Data;
+
+        const container = document.getElementById('addPreviewContainer');
+        if (container) container.style.display = 'block';
+
+        const filenameSpan = document.getElementById('addFileName');
+        if (filenameSpan) filenameSpan.innerText = file.name;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateEditPreview(val) {
+      const previewImg = document.getElementById('editPreview');
+      if (previewImg && val) {
+        previewImg.src = val;
+      }
+    }
+
+    // USER & STORAGE
+    function loadUserData() {
+      document.getElementById('displayUsername').innerText = currentUser;
+      const savedData = localStorage.getItem(`sortd_data_${currentUser}`);
+      if (savedData) {
+        try {
+          const parsed = JSON.parse(savedData);
+          lists = parsed.lists || lists;
+          products = parsed.products || products;
+        } catch(e) {}
+      }
+    }
+
+    function saveUserData() {
+      if(isReadOnly) return;
+      const data = { lists, products };
+      localStorage.setItem(`sortd_data_${currentUser}`, JSON.stringify(data));
+      localStorage.setItem('sortd_current_user', currentUser);
+    }
+
+    function openUserModal() {
+      document.getElementById('usernameInput').value = currentUser;
+      document.getElementById('userModalOverlay').classList.add('active');
+    }
+
+    function saveUsername() {
+      const val = document.getElementById('usernameInput').value.trim();
+      if(val) {
+        currentUser = val;
+        loadUserData();
+        saveUserData();
+        closeModal('userModalOverlay');
+        renderListsNav();
+        renderProducts();
+      }
+    }
+
+    // CODE SHARING & IMPORT SYSTEM
+    function generateBoardCode() {
+      const payload = {
+        user: currentUser,
+        lists: lists,
+        products: products
+      };
+      return btoa(encodeURIComponent(JSON.stringify(payload)));
+    }
+
+    function openShareCodeModal() {
+      const code = generateBoardCode();
+      document.getElementById('generatedShareCode').innerText = code;
+      document.getElementById('shareCodeModalOverlay').classList.add('active');
+    }
+
+    function copyShareCodeText() {
+      const code = document.getElementById('generatedShareCode').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        alert("Wishlist Share Code copied to clipboard!");
+      });
+    }
+
+    function openImportCodeModal() {
+      document.getElementById('inputShareCode').value = '';
+      document.getElementById('importCodeModalOverlay').classList.add('active');
+    }
+
+    function loadBoardFromCode() {
+      const rawCode = document.getElementById('inputShareCode').value.trim();
+      if (!rawCode) {
+        alert("Please enter a valid code.");
+        return;
+      }
+
+      try {
+        const decodedString = decodeURIComponent(atob(rawCode));
+        const parsed = JSON.parse(decodedString);
+
+        if (parsed.lists && parsed.products) {
+          isReadOnly = true;
+          currentUser = parsed.user || "Shared User";
+          lists = parsed.lists;
+          products = parsed.products;
+
+          document.getElementById('readOnlyBadge').style.display = 'inline-block';
+          document.getElementById('editableHeaderActions').style.display = 'none';
+
+          closeModal('importCodeModalOverlay');
+          renderListsNav();
+          renderProducts();
+          alert(`Successfully loaded ${currentUser}'s wishlist!`);
+        } else {
+          alert("Invalid wishlist code structure.");
+        }
+      } catch(e) {
+        alert("Invalid code format. Please verify and try again.");
+      }
+    }
+
+    async function triggerNativeShare() {
+      const code = generateBoardCode();
+      const shareUrl = `${window.location.origin}${window.location.pathname}#share=${encodeURIComponent(JSON.stringify({user: currentUser, lists, products}))}`;
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: `${currentUser}'s Wishlist Board`,
+            text: `Check out my wishlist! Code: ${code}`,
+            url: shareUrl
+          });
+          return;
+        } catch (err) {}
+      }
+
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        alert("Board link copied to clipboard!");
+      });
+    }
+
+    function checkSharedLink() {
+      if (window.location.hash.startsWith('#share=')) {
+        try {
+          const raw = window.location.hash.replace('#share=', '');
+          const decoded = JSON.parse(decodeURIComponent(raw));
+          
+          isReadOnly = true;
+          lists = decoded.lists || [];
+          products = decoded.products || [];
+          
+          document.getElementById('readOnlyBadge').style.display = 'inline-block';
+          document.getElementById('editableHeaderActions').style.display = 'none';
+        } catch(e) {}
+      }
+    }
+
+    // SAFE LIST DELETION
+    function openManageListsModal() {
+      const select = document.getElementById('manageListSelect');
+      select.innerHTML = '';
+      lists.forEach(l => {
+        select.innerHTML += `<option value="${l}">${l}</option>`;
+      });
+      document.getElementById('manageListsModalOverlay').classList.add('active');
+    }
+
+    function initiateListDelete() {
+      listToDelete = document.getElementById('manageListSelect').value;
+      if(!listToDelete) return;
+
+      closeModal('manageListsModalOverlay');
+      document.getElementById('deleteListWarningText').innerText = 
+        `Warning: You are about to delete "${listToDelete}". All items in this list will be reassigned to "General".`;
+      document.getElementById('confirmListNameInput').value = '';
+      document.getElementById('deleteListModalOverlay').classList.add('active');
+    }
+
+    function confirmDeleteList() {
+      const typed = document.getElementById('confirmListNameInput').value.trim();
+      if (typed !== listToDelete) {
+        alert(`Name mismatch. Please type "${listToDelete}" exactly.`);
+        return;
+      }
+
+      lists = lists.filter(l => l !== listToDelete);
+      products.forEach(p => {
+        if (p.list === listToDelete) p.list = 'General';
+      });
+
+      if (activeFilter === listToDelete) activeFilter = 'All';
+
+      saveUserData();
+      closeModal('deleteListModalOverlay');
+      renderListsNav();
+      renderProducts();
+    }
+
+    function openCreateListModal() {
+      document.getElementById('createListModalOverlay').classList.add('active');
+    }
+
+    function createNewList() {
+      const nameInput = document.getElementById('newListName');
+      const name = nameInput.value.trim();
+
+      if (name && !lists.includes(name)) {
+        lists.push(name);
+        nameInput.value = '';
+        saveUserData();
+        closeModal('createListModalOverlay');
+        setFilter(name);
+      }
+    }
+
+    // METADATA & EXTRACTION PIPELINE
+    function openAddModal() {
+      document.getElementById('addModalOverlay').classList.add('active');
+    }
+
+    async function extractAndAddProduct() {
+      const urlInput = document.getElementById('importUrl').value.trim();
+      const customImgInput = document.getElementById('addCustomImage').value;
+      const listInput = document.getElementById('importCategoryList').value;
+      const priorityInput = document.getElementById('importPriority').value;
+      const notesInput = document.getElementById('importNotes').value.trim();
+      const loader = document.getElementById('addLoader');
+
+      if (!urlInput && !customImgInput) {
+        alert('Please enter a web link or upload a photo.');
+        return;
+      }
+
+      let extractedTitle = "New Product Item";
+      let extractedBrand = "Personal Upload";
+      let extractedPrice = "$--.--";
+      let extractedImage = customImgInput || "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80";
+      let extractedDescription = notesInput;
+
+      if (urlInput) {
+        loader.style.display = 'flex';
+        try {
+          const apiEndpoint = `https://api.microlink.io?url=${encodeURIComponent(urlInput)}`;
+          const response = await fetch(apiEndpoint);
+          const result = await response.json();
+
+          if (result.status === 'success' && result.data) {
+            const d = result.data;
+
+            if (d.title) extractedTitle = d.title.replace(/\s*[\|-]\s*.*$/, '');
+            if (!customImgInput && d.image && d.image.url) extractedImage = d.image.url;
+            
+            if (d.publisher) {
+              extractedBrand = d.publisher;
+            } else {
+              try {
+                extractedBrand = new URL(urlInput).hostname.replace('www.', '').split('.')[0];
+                extractedBrand = extractedBrand.charAt(0).toUpperCase() + extractedBrand.slice(1);
+              } catch(e){}
+            }
+
+            const fullText = (d.title || '') + " " + (d.description || '');
+            const priceMatch = fullText.match(/[\$\&\£\€]\d+(?:\.\d{2})?/);
+            if (priceMatch) extractedPrice = priceMatch[0];
+
+            if (!notesInput && d.description) {
+              extractedDescription = d.description.length > 120 ? d.description.substring(0, 117) + '...' : d.description;
+            }
+          }
+        } catch(e) {
+          console.warn("Extraction fallback used", e);
+        }
+      }
+
+      const newProd = {
+        id: Date.now().toString(),
+        title: extractedTitle,
+        brand: extractedBrand,
+        price: extractedPrice,
+        image: extractedImage,
+        url: urlInput || '#',
+        list: listInput,
+        priority: priorityInput,
+        notes: extractedDescription
+      };
+
+      products.unshift(newProd);
+      saveUserData();
+
+      loader.style.display = 'none';
+      closeModal('addModalOverlay');
+      
+      document.getElementById('importUrl').value = '';
+      document.getElementById('addCustomImage').value = '';
+      document.getElementById('addPreview').src = '';
+      document.getElementById('addPreviewContainer').style.display = 'none';
+      document.getElementById('addFileName').innerText = 'No file chosen';
+      document.getElementById('importNotes').value = '';
+
+      renderProducts();
+    }
+
+    // RENDERING & INTERACTION
+    function renderListsNav() {
+      const nav = document.getElementById('listNavContainer');
+      nav.innerHTML = `
+        <button class="filter-btn ${activeFilter === 'All' ? 'active' : ''}" onclick="setFilter('All')">All</button>
+      `;
+
+      lists.forEach(listName => {
+        const isActive = activeFilter === listName ? 'active' : '';
+        nav.innerHTML += `
+          <button class="filter-btn ${isActive}" onclick="setFilter('${listName}')">
+            ${listName}
+          </button>
+        `;
+      });
+
+      populateListDropdowns();
+      feather.replace();
+    }
+
+    function setFilter(listName) {
+      activeFilter = listName;
+      renderListsNav();
+      renderProducts();
+    }
+
+    function populateListDropdowns() {
+      const addSelect = document.getElementById('importCategoryList');
+      const editSelect = document.getElementById('editCategoryList');
+
+      let options = `<option value="General">General</option>`;
+      lists.forEach(l => options += `<option value="${l}">${l}</option>`);
+
+      if(addSelect) addSelect.innerHTML = options;
+      if(editSelect) editSelect.innerHTML = options;
+    }
+
+    function renderProducts() {
+      const container = document.getElementById('gridContainer');
+      container.innerHTML = '';
+
+      const filtered = products.filter(p => activeFilter === 'All' || p.list === activeFilter);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
+            <p>No items found in <strong>"${activeFilter}"</strong>.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const card = document.createElement('article');
+        card.className = 'card';
+
+        const actionButtons = isReadOnly ? '' : `
+          <div class="action-icons">
+            <button class="icon-btn" onclick="openEditModal('${item.id}')"><i data-feather="edit-2" style="width: 14px;"></i></button>
+            <button class="icon-btn delete-btn" onclick="deleteProduct('${item.id}')"><i data-feather="trash-2" style="width: 14px;"></i></button>
+            <a href="${item.url}" target="_blank" class="icon-btn"><i data-feather="external-link" style="width: 14px;"></i></a>
+          </div>
+        `;
+
+        card.innerHTML = `
+          <div class="card-media">
+            <img src="${item.image}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80'">
+            <div class="card-overlay">
+              <div class="overlay-top">
+                <span class="badge badge-priority-${item.priority}">${item.priority}</span>
+                ${actionButtons}
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="brand">${item.brand}</div>
+            <div class="title">${item.title}</div>
+            <div class="price">${item.price}</div>
+            ${item.notes ? `<div class="notes">${item.notes}</div>` : ''}
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+
+      feather.replace();
+    }
+
+    function openEditModal(id) {
+      const item = products.find(p => p.id === id);
+      if (!item) return;
+
+      document.getElementById('editItemId').value = item.id;
+      document.getElementById('editTitle').value = item.title;
+      document.getElementById('editBrand').value = item.brand;
+      document.getElementById('editPrice').value = item.price;
+      document.getElementById('editImage').value = item.image;
+      document.getElementById('editPreview').src = item.image;
+      document.getElementById('editCategoryList').value = item.list;
+      document.getElementById('editPriority').value = item.priority;
+      document.getElementById('editNotes').value = item.notes || '';
+
+      document.getElementById('editModalOverlay').classList.add('active');
+    }
+
+    function saveProductEdit() {
+      const id = document.getElementById('editItemId').value;
+      const item = products.find(p => p.id === id);
+
+      if (item) {
+        item.title = document.getElementById('editTitle').value.trim();
+        item.brand = document.getElementById('editBrand').value.trim();
+        item.price = document.getElementById('editPrice').value.trim();
+        item.image = document.getElementById('editImage').value.trim();
+        item.list = document.getElementById('editCategoryList').value;
+        item.priority = document.getElementById('editPriority').value;
+        item.notes = document.getElementById('editNotes').value.trim();
+
+        saveUserData();
+        closeModal('editModalOverlay');
+        renderProducts();
+      }
+    }
+
+    function deleteProduct(id) {
+      if (confirm('Delete this item?')) {
+        products = products.filter(p => p.id !== id);
+        saveUserData();
+        renderProducts();
+      }
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+  </script>
+</body>
+</html>
